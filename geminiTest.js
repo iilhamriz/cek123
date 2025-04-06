@@ -1,71 +1,31 @@
 // testGemini.js
-//
-// Pastikan Anda install 'node-fetch' dulu:
-//   npm install node-fetch
-//
-// Cara pakai (command line):
-//   node testGemini.js "Apa itu asynchronous dalam JavaScript?"
-//
-// Kode di bawah hanya CONTOH.
-// Endpoint, model, dan struktur payload kemungkinan berbeda jika Gemini sudah rilis resmi.
 
-const fetch = require('node-fetch');
+import { GoogleGenerativeAI } from "./GoogleGenerativeAI.js";
 
-// Ganti dengan API key Gemini Anda (saat sudah tersedia).
-const GEMINI_API_KEY = "MASUKKAN_API_KEY_GEMINI_DI_SINI";
-
-// Fungsi pemanggilan "Gemini" (placeholder) untuk satu pertanyaan
-async function getGeminiReply(question) {
-  // Placeholder endpoint – ubah sesuai dokumentasi Gemini
-  const GEMINI_ENDPOINT = "https://api.google.com/v1/gemini/chat"; 
-
-  // Payload ini juga hanya contoh. Bisa berbeda di versi resmi.
-  const payload = {
-    model: "gemini-beta-model",
-    messages: [{ role: "user", content: question }],
-    temperature: 0.7
-  };
-
-  // Lakukan request ke endpoint
-  const response = await fetch(GEMINI_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${GEMINI_API_KEY}`
-    },
-    body: JSON.stringify(payload)
-  });
-
-  // Jika gagal, lempar error
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status} - ${await response.text()}`);
-  }
-
-  // Parsing respons
-  const data = await response.json();
-  // Asumsi strukturnya mirip OpenAI
-  const answer = data?.choices?.[0]?.message?.content?.trim() || "Tidak ada jawaban.";
-  return answer;
+// Contoh fungsi getNextApiKeyGemini() (sekadar placeholder).
+// Mungkin Anda punya cara dinamis mengambil API key berbeda-beda.
+function getNextApiKeyGemini() {
+  return "YOUR_GEMINI_API_KEY";
 }
 
-// Fungsi utama untuk running via CLI
 async function main() {
-  // Ambil argumen ke-2 (pertanyaan) dari command line
-  const question = process.argv[2];
-
-  if (!question) {
-    console.log("Usage: node testGemini.js \"Pertanyaan AI\"");
-    process.exit(1);
-  }
-
   try {
-    console.log("Memanggil Gemini...\n");
-    const answer = await getGeminiReply(question);
-    console.log("Jawaban AI:\n", answer);
+    // 1. Buat instance
+    const genAI = new GoogleGenerativeAI(getNextApiKeyGemini());
+
+    // 2. Dapatkan model
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    // 3. Generate content
+    const prompt = "Halo Gemini, apa kabar?";
+    const result = await model.generateContent(prompt);
+
+    // 4. Tampilkan hasil
+    console.log("AI Response:", result.response);
+
   } catch (error) {
-    console.error("Terjadi error:", error.message);
+    console.error("Error di main:", error.message);
   }
 }
 
-// Eksekusi main()
 main();
