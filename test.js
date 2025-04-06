@@ -12,7 +12,7 @@
  *     - Simpan dan berikan izin yang diperlukan.
  ***************/
 
-const OPENAI_API_KEY = ""
+const OPENAI_API_KEY = "";
 
 function onEdit(e) {
   try {
